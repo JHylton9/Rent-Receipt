@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rent Receipt</title>
+
+    <!-- Google Fonts (typewriter-style) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Material Icons -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #ffffff;
+        --fg: #0a0a0a;
+        --muted: #5d5d5d;
+        --line: #d8d8d8;
+        --line-strong: #bcbcbc;
+        --paper: #fbf2c9;
+        --paper2: #eaf9ff;
+        --shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+        --r-lg: 14px;
+        --r-md: 10px;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        color: var(--fg);
+        background: var(--bg);
+        font-family: "Courier Prime", ui-monospace, SFMono-Regular, Menlo, Monaco,
+          Consolas, "Liberation Mono", "Courier New", monospace;
+        line-height: 1.35;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.03;
+        background-image: radial-gradient(#000 1px, transparent 1px);
+        background-size: 18px 18px;
+      }
+
+      main.container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+
+      .shell {
+        border: 2px solid #111;
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      @media (min-width: 980px) {
+        .layout {
+          grid-template-columns: 1.45fr 0.55fr;
+          min-height: 640px;
+        }
+      }
+
+      .form-panel {
+        padding: 18px 18px 22px;
+        border-right: 0;
+        background: #fff;
+      }
+
+      @media (min-width: 980px) {
+        .form-panel {
+          border-right: 2px solid #111;
+        }
+      }
+
+      header.page-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 12px;
+      }
+
+      header.page-head h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+      }
+
+      form {
+        display: grid;
+        gap: 12px;
+      }
+
+      .grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 1fr;
+      }
+
+      @media (min-width: 720px) {
+        .grid.two {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .control {
+        display: grid;
+        gap: 6px;
+      }
+
+      label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: #111;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line-strong);
+        border-radius: 6px;
+        padding: 11px 10px;
+        background: #fff;
+        color: var(--fg);
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 220ms var(--ease), box-shadow 220ms var(--ease),
+          transform 220ms var(--ease), background 220ms var(--ease);
+      }
+
+      textarea {
+        min-height: 70px;
+        resize: vertical;
+      }
+
+      /* Transparent / non-interactive placeholder text (user can still type normally) */
+      input::placeholder,
+      textarea::placeholder {
+        color: rgba(10, 10, 10, 0.35);
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #111;
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+      }
+
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      input[aria-invalid="true"],
+      select[aria-invalid="true"],
+      textarea[aria-invalid="true"] {
+        border-color: #111;
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.14);
+        background: linear-gradient(#fff, #fff) padding-box,
+          linear-gradient(90deg, #000, #000) border-box;
+      }
+
+      .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-top: 10px;
+      }
+
+      button {
+        appearance: none;
+        border: 2px solid #111;
+        border-radius: 0;
+        background: #fff;
+        color: #111;
+        padding: 10px 12px;
+        font-family: inherit;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-size: 12px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: transform 220ms var(--ease), box-shadow 220ms var(--ease),
+          background 220ms var(--ease), color 220ms var(--ease);
+      }
+
+      button .material-icons {
+        font-size: 18px;
+      }
+
+      button.primary {
+        background: #111;
+        color: #fff;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.09);
+      }
+
+      button:active {
+        transform: translateY(0) scale(0.99);
+      }
+
+      .status {
+        display: none;
+        margin-top: 8px;
+        padding: 10px 12px;
+        border-left: 4px solid #111;
+        background: #fafafa;
+        font-size: 12px;
+        color: var(--muted);
+        animation: fadeUp 420ms var(--ease) both;
+      }
+
+      .status.show {
+        display: block;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .saved {
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 2px solid #111;
+      }
+
+      .saved h2 {
+        margin: 0;
+        font-size: 22px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .preview-panel {
+        background: var(--paper);
+        padding: 14px;
+      }
+
+      .receipt-card {
+        border: 2px solid #111;
+        border-radius: 12px;
+        background: #fff;
+        overflow: hidden;
+      }
+
+      .receipt-card.hidden {
+        display: none;
+      }
+
+      .receipt-note {
+        background: var(--paper2);
+        border: 2px dotted #111;
+        border-radius: 10px;
+        margin: 10px;
+        padding: 12px;
+      }
+
+      .receipt-note h3 {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+      }
+
+      .receipt-lines {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 6px;
+        font-size: 13px;
+      }
+
+      .receipt-lines li {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 10px;
+      }
+
+      .receipt-lines b {
+        font-weight: 700;
+      }
+
+      .reveal {
+        animation: reveal 520ms var(--ease) both;
+      }
+
+      @keyframes reveal {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+          filter: blur(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+          filter: blur(0);
+        }
+      }
+
+      @media print {
+        body::before {
+          display: none !important;
+        }
+
+        main.container {
+          padding: 0 !important;
+          max-width: none !important;
+        }
+
+        .shell {
+          border: none !important;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+        }
+
+        header.page-head,
+        .form-actions,
+        .status,
+        .saved {
+          display: none !important;
+        }
+
+        .form-panel {
+          display: none !important;
+        }
+
+        .preview-panel {
+          background: #fff !important;
+          padding: 0 !important;
+        }
+
+        .receipt-card {
+          border-radius: 0 !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="container">
+      <div class="shell">
+        <div class="layout">
+          <!-- LEFT: FORM -->
+          <section class="form-panel" aria-label="Rent receipt form">
+            <header class="page-head">
+              <h1>Generate Rent Receipt</h1>
+              <!-- Removed the typewriter B/W icon (badge) as requested -->
+            </header>
+
+            <form id="receiptForm" novalidate>
+              <div class="grid two">
+                <div class="control">
+                  <label for="tenantName">Tenant Name *</label>
+                  <input
+                    id="tenantName"
+                    name="tenantName"
+                    type="text"
+                    minlength="2"
+                    maxlength="80"
+                    required
+                    aria-invalid="false"
+                    placeholder="e.g., Alex Johnson"
+                  />
+                  <div class="hint">2–80 characters</div>
+                </div>
+
+                <div class="control">
+                  <label for="landlordName">Landlord Name *</label>
+                  <input
+                    id="landlordName"
+                    name="landlordName"
+                    type="text"
+                    minlength="2"
+                    maxlength="80"
+                    required
+                    aria-invalid="false"
+                    placeholder="e.g., Harbor Properties Ltd."
+                  />
+                  <div class="hint">2–80 characters</div>
+                </div>
+              </div>
+
+              <div class="grid two">
+                <div class="control">
+                  <label for="email">Email</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    maxlength="120"
+                    aria-invalid="false"
+                    placeholder="tenant@email.com"
+                  />
+                  <div class="hint">Optional (email format)</div>
+                </div>
+
+                <div class="control">
+                  <label for="phone">Phone</label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    maxlength="25"
+                    aria-invalid="false"
+                    placeholder="+1 (___) ___-____"
+                  />
+                  <div class="hint">Optional (max 25)</div>
+                </div>
+              </div>
+
+              <div class="grid two">
+                <div class="control">
+                  <label for="propertyAddress">Property / Address *</label>
+                  <input
+                    id="propertyAddress"
+                    name="propertyAddress"
+                    type="text"
+                    minlength="5"
+                    maxlength="120"
+                    required
+                    aria-invalid="false"
+                    placeholder="e.g., 45 Topaz Crescent, Red Hills, St. Andrew"
+                  />
+                  <div class="hint">5–120 characters</div>
+                </div>
+
+                <div class="control">
+                  <label for="unit">Unit</label>
+                  <input
+                    id="unit"
+                    name="unit"
+                    type="text"
+                    maxlength="20"
+                    aria-invalid="false"
+                    placeholder="e.g., 13"
+                  />
+                  <div class="hint">Optional (max 20)</div>
+                </div>
+              </div>
+
+              <div class="grid two">
+                <div class="control">
+                  <label for="amount">Amount (USD) *</label>
+                  <input
+                    id="amount"
+                    name="amount"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    required
+                    aria-invalid="false"
+                    placeholder="e.g., 1200.00"
+                  />
+                  <div class="hint">Positive number</div>
+                </div>
+
+                <div class="control">
+                  <label for="paymentDate">Payment Date *</label>
+                  <input
+                    id="paymentDate"
+                    name="paymentDate"
+                    type="date"
+                    required
+                    aria-invalid="false"
+                  />
+                  <div class="hint">Required</div>
+                </div>
+              </div>
+
+              <div class="grid two">
+                <div class="control">
+                  <label for="rentFrom">Rent Period From *</label>
+                  <input
+                    id="rentFrom"
+                    name="rentFrom"
+                    type="date"
+                    required
+                    aria-invalid="false"
+                  />
+                </div>
+
+                <div class="control">
+                  <label for="rentTo">To *</label>
+                  <input id="rentTo" name="rentTo" type="date" required aria-invalid="false" />
+                </div>
+              </div>
+
+              <div class="grid two">
+                <div class="control">
+                  <label for="method">Payment Method *</label>
+                  <select id="method" name="method" required aria-invalid="false">
+                    <option value="Online" selected>Online</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Cheque">Cheque</option>
+                    <option value="Card">Card</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div class="control">
+                  <label for="receiptId">Receipt ID *</label>
+                  <input
+                    id="receiptId"
+                    name="receiptId"
+                    type="text"
+                    minlength="3"
+                    maxlength="20"
+                    required
+                    aria-invalid="false"
+                    placeholder="e.g., RCPT-001"
+                  />
+                  <div class="hint">3–20 characters</div>
+                </div>
+              </div>
+
+              <div class="control">
+                <label for="notes">Notes</label>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  maxlength="300"
+                  aria-invalid="false"
+                  placeholder="e.g., Paid in full. Thank you."
+                ></textarea>
+                <div class="hint">Optional (max 300)</div>
+              </div>
+
+              <div class="control">
+                <label for="signature">Signature</label>
+                <input
+                  id="signature"
+                  name="signature"
+                  type="text"
+                  maxlength="60"
+                  aria-invalid="false"
+                  placeholder="e.g., Digital/Typed Signature"
+                />
+                <div class="hint">Optional (max 60)</div>
+              </div>
+
+              <div class="form-actions">
+                <button class="primary" type="button" id="generateBtn">
+                  <span class="material-icons" aria-hidden="true">receipt_long</span>
+                  Generate Receipt
+                </button>
+                <button type="button" id="printBtn">
+                  <span class="material-icons" aria-hidden="true">print</span>
+                  Print
+                </button>
+                <button type="button" id="downloadBtn">
+                  <span class="material-icons" aria-hidden="true">save</span>
+                  Save
+                </button>
+              </div>
+
+              <output id="status" class="status" role="status" aria-live="polite"></output>
+
+              <section class="saved" aria-label="Saved receipts section">
+                <h2>Saved Receipts</h2>
+              </section>
+            </form>
+          </section>
+
+          <!-- RIGHT: PREVIEW -->
+          <aside class="preview-panel" aria-live="polite" aria-label="Receipt preview">
+            <div id="receiptCard" class="receipt-card hidden"></div>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Defaults (dates)
+      (function setDefaultDates() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, "0");
+        const dd = String(today.getDate()).padStart(2, "0");
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+
+        const first = new Date(yyyy, today.getMonth(), 1);
+        const last = new Date(yyyy, today.getMonth() + 1, 0);
+
+        const firstStr = `${first.getFullYear()}-${String(first.getMonth() + 1).padStart(2, "0")}-${String(first.getDate()).padStart(2, "0")}`;
+        const lastStr = `${last.getFullYear()}-${String(last.getMonth() + 1).padStart(2, "0")}-${String(last.getDate()).padStart(2, "0")}`;
+
+        document.getElementById("paymentDate").value = todayStr;
+        document.getElementById("rentFrom").value = firstStr;
+        document.getElementById("rentTo").value = lastStr;
+      })();
+
+      const form = document.getElementById("receiptForm");
+      const receiptCard = document.getElementById("receiptCard");
+      const statusEl = document.getElementById("status");
+
+      const btnGenerate = document.getElementById("generateBtn");
+      const btnPrint = document.getElementById("printBtn");
+      const btnDownload = document.getElementById("downloadBtn");
+
+      function alertButtonName(btn) {
+        const label = (btn.textContent || "").trim().replace(/\s+/g, " ");
+        alert(label);
+      }
+
+      function setStatus(message) {
+        statusEl.textContent = message || "";
+        statusEl.classList.toggle("show", Boolean(message));
+      }
+
+      function markValidity(el, ok) {
+        el.setAttribute("aria-invalid", ok ? "false" : "true");
+      }
+
+      function validateForm() {
+        setStatus("");
+
+        Array.from(form.querySelectorAll("input, select, textarea")).forEach((el) =>
+          markValidity(el, true)
+        );
+
+        const required = [
+          document.getElementById("tenantName"),
+          document.getElementById("landlordName"),
+          document.getElementById("propertyAddress"),
+          document.getElementById("amount"),
+          document.getElementById("paymentDate"),
+          document.getElementById("rentFrom"),
+          document.getElementById("rentTo"),
+          document.getElementById("method"),
+          document.getElementById("receiptId"),
+        ];
+
+        let ok = true;
+
+        for (const el of required) {
+          if (!el.checkValidity()) {
+            markValidity(el, false);
+            ok = false;
+          }
+        }
+
+        const rentFrom = document.getElementById("rentFrom");
+        const rentTo = document.getElementById("rentTo");
+        if (rentFrom.value && rentTo.value && rentFrom.value > rentTo.value) {
+          markValidity(rentFrom, false);
+          markValidity(rentTo, false);
+          ok = false;
+          setStatus("Rent period 'from' must be on or before 'to'.");
+        }
+
+        const amount = document.getElementById("amount");
+        const amt = Number(amount.value);
+        if (!Number.isFinite(amt) || amt <= 0) {
+          markValidity(amount, false);
+          ok = false;
+          setStatus("Amount must be a positive number.");
+        }
+
+        if (!ok && !statusEl.textContent) {
+          setStatus("Please fill all required fields correctly.");
+        }
+
+        return ok;
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function prettyDate(iso) {
+        if (!iso) return "—";
+        const d = new Date(iso + "T00:00:00");
+        return d.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "2-digit",
+        });
+      }
+
+      function formatMoneyUSD(n) {
+        const num = Number(n);
+        if (!Number.isFinite(num)) return "—";
+        return num.toLocaleString(undefined, {
+          style: "currency",
+          currency: "USD",
+        });
+      }
+
+      function readFormData() {
+        return {
+          tenantName: document.getElementById("tenantName").value.trim(),
+          landlordName: document.getElementById("landlordName").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          phone: document.getElementById("phone").value.trim(),
+          propertyAddress: document.getElementById("propertyAddress").value.trim(),
+          unit: document.getElementById("unit").value.trim(),
+          amount: document.getElementById("amount").value,
+          paymentDate: document.getElementById("paymentDate").value,
+          rentFrom: document.getElementById("rentFrom").value,
+          rentTo: document.getElementById("rentTo").value,
+          method: document.getElementById("method").value,
+          receiptId: document.getElementById("receiptId").value.trim(),
+          notes: document.getElementById("notes").value.trim(),
+          signature: document.getElementById("signature").value.trim(),
+        };
+      }
+
+      function buildReceiptHtml(data) {
+        const lines = [
+          ["Tenant:", data.tenantName || "—"],
+          ["Landlord:", data.landlordName || "—"],
+          ["Address:", data.propertyAddress || "—"],
+          ["Unit:", data.unit || "—"],
+          ["Amount:", formatMoneyUSD(data.amount)],
+          ["Payment Method:", data.method || "—"],
+          ["Date:", prettyDate(data.paymentDate)],
+          ["Receipt No:", data.receiptId || "—"],
+        ];
+
+        return `
+          <section class="reveal" aria-label="Generated receipt">
+            <div class="receipt-note">
+              <h3>Receipt</h3>
+              <ul class="receipt-lines">
+                ${lines
+                  .map(
+                    ([k, v]) =>
+                      `<li><b>${escapeHtml(k)}</b><span>${escapeHtml(v)}</span></li>`
+                  )
+                  .join("")}
+              </ul>
+            </div>
+          </section>
+        `;
+      }
+
+      function renderReceipt() {
+        const data = readFormData();
+        receiptCard.innerHTML = buildReceiptHtml(data);
+        receiptCard.classList.remove("hidden");
+      }
+
+      // Button behavior: alert the name on click (as requested)
+      btnGenerate.addEventListener("click", () => {
+        alertButtonName(btnGenerate);
+        if (!validateForm()) return;
+        renderReceipt();
+        setStatus("Receipt generated.");
+      });
+
+      btnPrint.addEventListener("click", () => {
+        alertButtonName(btnPrint);
+        if (!validateForm()) return;
+        if (receiptCard.classList.contains("hidden")) renderReceipt();
+        window.print();
+      });
+
+      btnDownload.addEventListener("click", () => {
+        alertButtonName(btnDownload);
+        if (!validateForm()) return;
+        if (receiptCard.classList.contains("hidden")) renderReceipt();
+
+        // Download a minimal HTML file (printable)
+        const receiptOnly = receiptCard.innerHTML;
+        const doc = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rent Receipt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;padding:16px;font-family:"Courier Prime",monospace;color:#000;background:#fff;line-height:1.35}
+  .card{border:2px solid #000}
+  .note{margin:10px;border:2px dotted #000;padding:12px}
+  h3{margin:0 0 8px 0;text-transform:uppercase;letter-spacing:.7px;font-size:14px}
+  ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13px}
+  li{display:grid;grid-template-columns:120px 1fr;gap:10px}
+</style>
+</head>
+<body>
+  <div class="card">${receiptOnly.replaceAll("receipt-note", "note")}</div>
+</body>
+</html>`;
+
+        const blob = new Blob([doc], { type: "text/html;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download =
+          "rent-receipt-" +
+          (document.getElementById("receiptId").value || "RCPT").trim() +
+          ".html";
+
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        setStatus("Saved (download started).");
+      });
+    </script>
+  </body>
+</html>
