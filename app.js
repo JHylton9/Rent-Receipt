@@ -25,6 +25,11 @@
     document.getElementById("rentTo").value = lastStr;
   }
 
+  function alertButtonName(btn) {
+    const label = (btn.textContent || "").trim().replace(/\s+/g, " ");
+    alert(label);
+  }
+
   function setStatus(message) {
     statusEl.textContent = message || "";
     statusEl.classList.toggle("show", Boolean(message));
@@ -198,25 +203,23 @@
   }
 
   btnGenerate.addEventListener("click", () => {
+    alertButtonName(btnGenerate);
     if (!validateForm()) return;
     renderReceipt();
     setStatus("Receipt generated.");
   });
 
   btnPrint.addEventListener("click", () => {
+    alertButtonName(btnPrint);
     if (!validateForm()) return;
-    if (receiptCard.classList.contains("hidden")) {
-      renderReceipt();
-      setStatus("Receipt generated.");
-    }
+    if (receiptCard.classList.contains("hidden")) renderReceipt();
     window.print();
   });
 
-  btnDownload.addEventListener("click", () => {
+  btnDownload.addEventListner("click", () => {
+    alertButtonName(btnDownload);
     if (!validateForm()) return;
-    if (receiptCard.classList.contains("hidden")) {
-      renderReceipt();
-    }
+    if (receiptCard.classList.contains("hidden")) renderReceipt();
 
     const doc = getDownloadDocument();
     const blob = new Blob([doc], { type: "text/html;charset=utf-8" });
@@ -236,5 +239,3 @@
 
   setDefaultDates();
 })();
-index.html
-index.html
